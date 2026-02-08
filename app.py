@@ -12,7 +12,7 @@ def heart_disease_prediction(input_data):
     input_data_as_numpy_array = np.asarray(input_data)
 
     # reshape the array as we are predicting for one instance
-    input_data_reshaped = input_data_as_numpy_array.reshape(1, -1)
+    input_data_reshaped = input_data_as_numpy_array.reshaped()
 
     prediction = loaded_model.predict(input_data_reshaped)
     
@@ -27,33 +27,44 @@ def main():
     st.title('Heart Disease Prediction Web App')
 
     # getting the input data from the user
-    age = st.text_input('Enter your age')
-    sex = st.text_input('Male / Female')
-    cp = st.text_input('Select chest pain category')
-    trestbps = st.text_input('Blood pressure at rest')
-    chol = st.text_input('Cholesterol level')
-    fbs = st.text_input('Above 120 mg/dl (Yes/No)')
-    restecg = st.text_input('ECG test result')
-    thalach = st.text_input('Highest heart rate achieved')
-    exang = st.text_input('Chest pain during exercise (Yes/No)')
-    oldpeak = st.text_input('Exercise-induced ST depression')
-    slope = st.text_input('ST segment slope')
-    ca = st.text_input('Number of major blood vessels')
-    thal = st.text_input('lood disorder type')
+    age = st.number_input('Enter your age', min_value=0, max_value=120, step=1)
+    
+    sex = st.selectbox('Male / Female', ['Male','Female'])
+    sex = 1 if sex =='Male' else 0
+    
+    cp = st.selectbox('Select chest pain category', [0,1,2,3])
+    
+    trestbps = st.number_input('Blood pressure at rest', min_value=0)
+    
+    chol = st.number_input('Cholesterol level', min_value=0)
 
-    # code for Prediction
-    pridiction = ''
+    fbs = st.selectbox('Above 120 mg/dl (Yes/No)', ['Yes','No'])
+    fbs = 1 if fbs == 'Yes' else 0
 
-    # creating button for prediction
+    restecg = st.selectbox('ECG test result', [0,1,2])
+
+    thalach = st.number_input('Highest heart rate achieved', min_value=0)
+
+    exang = st.selectbox('Chest pain during exercise (Yes/No)', ['Yes','No'])
+    exang = 1 if exang == 'Yes' else 0
+
+    oldpeak = st.number_input('Exercise-induced ST depression', min_value=0.0, step=0.1)
+
+    slope = st.selectbox('ST segment slope', [0,1,2])
+
+    ca = st.number_input('Number of major blood vessels', min_value=0, max_value=4, step=1)
+    
+    thal = st.selectbox('lood disorder type', [1,2,3])
+
+    # Prediction button
     if st.button('Heart Disease Result'):
-        if "" in [age, sex, cp, trestbps, chol, fbs, restecg, thalach, exang, oldpeak, slope, ca, thal]:
-            st.error("Please fill in all fields with numeric values.")
-        else:
-            # run prediction
-            prediction = heart_disease_prediction([age, sex, cp, trestbps, chol, fbs, restecg, thalach, exang, oldpeak, slope, ca, thal])
-            st.success(prediction)
-
+        input_data = [
+            age, sex, cp, trestbps, chol, fbs,
+            restecg, thalach, exang, oldpeak,
+            slope, ca, thal
+        ]
+        result = heart_disease_prediction(input_data)
+        st.success(result)
+    
 if __name__ == '__main__':
-
     main()
-
